@@ -1,1 +1,66 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #ff0000, #0000ff);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
 
+/* works with ANY container class */
+.container, .box {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 30px;
+  border-radius: 15px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+h1 {
+  margin-bottom: 20px;
+  font-size: 26px;
+}
+
+input {
+  width: 90%;
+  padding: 10px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
+
+button {
+  width: 45%;
+  padding: 10px;
+  margin: 8px 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+/* first button (Register) */
+button:first-of-type {
+  background: green;
+  color: white;
+}
+
+/* second button (Login) */
+button:last-of-type {
+  background: black;
+  color: white;
+}
+
+#msg {
+  margin-top: 10px;
+  font-weight: bold;
+}
