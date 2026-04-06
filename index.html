@@ -9,9 +9,9 @@
 <div class="container">
   <h1>Silvermartzim</h1>
 
-  <input type="email" id="email" placeholder="Enter Email">
-  <input type="text" id="phone" placeholder="+263 Phone Number">
-  <input type="password" id="password" placeholder="Enter Password">
+  <input type="email" id="email" placeholder="Enter Email" required>
+  <input type="text" id="phone" placeholder="+263 Phone Number" required>
+  <input type="password" id="password" placeholder="Enter Password" required>
 
   <button onclick="register()">Register</button>
   <button onclick="login()">Login</button>
@@ -19,8 +19,80 @@
   <p id="message"></p>
 </div>
 
+<!-- Supabase CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js"></script>
+
+<script>
+const supabase = window.supabase.createClient(
+  "https://ldzvaxawdtstwovvvfbv.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxkenZheGF3ZHRzdHdvdnZ2ZmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0Nzg4MTEsImV4cCI6MjA5MTA1NDgxMX0.SfS1eNoQtgW2Pb_keC3wTSXGHbvoLn8WwD-MudNGzHc"
+);
+
+// REGISTER
+async function register() {
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+  let phone = document.getElementById("phone").value;
+
+  // simple Zimbabwe phone check
+  if (!phone.startsWith("+263")) {
+    document.getElementById("message").innerText = "Use +263 phone format";
+    return;
+  }
+
+  let { data, error } = await supabase.auth.signUp({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    document.getElementById("message").innerText = error.message;
+  } else {
+    await supabase.from("users").insert([
+      {
+        email: email,
+        phone: phone,
+        status: "pending",
+        role: "user"
+      }
+    ]);
+
+    document.getElementById("message").innerText =
+      "Registered! Wait for admin approval.";
+  }
+}
+
+// LOGIN
+async function login() {
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  let { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    document.getElementById("message").innerText = error.message;
+  } else {
+    let user = data.user;
+
+    let { data: userData } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", user.email)
+      .single();
+
+    if (!userData || userData.status !== "approved") {
+      document.getElementById("message").innerText =
+        "You are still pending approval.";
+    } else {
+      document.getElementById("message").innerText =
+        "Login successful!";
+    }
+  }
+}
+</script>
 
 </body>
 </html>
